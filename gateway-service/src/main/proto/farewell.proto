@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package com.sample.farewell;
+
+option java_multiple_files = true;
+option java_package = "com.sample.farewell.grpc";
+option java_outer_classname = "FarewellProto";
+
+service FarewellService {
+  rpc farewell(FarewellRequest) returns (FarewellResponse);
+}
+
+message FarewellRequest {
+  string name = 1;
+}
+
+message FarewellResponse {
+  string message = 1;
+}
