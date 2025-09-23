@@ -15,12 +15,16 @@ public class AuthController {
     private AuthServiceGrpc.AuthServiceBlockingStub authServiceBlockingStub;
 
     @PostMapping("/login")
-    public String login(@RequestBody com.sample.gateway.dto.LoginRequest request) {
+    public com.sample.gateway.dto.LoginResponse login(@RequestBody com.sample.gateway.dto.LoginRequest request) {
         LoginRequest loginRequest = LoginRequest.newBuilder()
                 .setUsername(request.getUsername())
                 .setPassword(request.getPassword())
                 .build();
-        return authServiceBlockingStub.login(loginRequest).getMessage();
+        com.sample.auth.grpc.LoginResponse grpcResponse = authServiceBlockingStub.login(loginRequest);
+
+        return new com.sample.gateway.dto.LoginResponse(
+            grpcResponse.getStatus(), grpcResponse.getMessage()
+        );
     }
 
     @PostMapping("/register")
