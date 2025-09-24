@@ -52,6 +52,13 @@ services:
     ports:
       - "6002:8083"
 
+  mail-service:
+    build: ../mail-service
+    networks:
+      - banknet
+    ports:
+      - "7000:7000"
+
   gateway-service:
     build: ../gateway-service
     depends_on:
