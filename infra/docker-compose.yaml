@@ -59,6 +59,18 @@ services:
     ports:
       - "7000:7000"
 
+  upload-service:
+    build: ../upload-service
+    networks:
+      - banknet
+    ports:
+      - "8001:8000"
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - GITHUB_OWNER=${GITHUB_OWNER}
+      - GITHUB_REPO=${GITHUB_REPO}
+      - GITHUB_TARGET_FOLDER=${GITHUB_TARGET_FOLDER}
+
   gateway-service:
     build: ../gateway-service
     depends_on:
