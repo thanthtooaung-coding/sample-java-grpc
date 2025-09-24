@@ -1,5 +1,7 @@
 package com.sample.upload;
 
+import org.kohsuke.github.GHContent;
+import org.kohsuke.github.GHContentUpdateResponse;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.GitHubBuilder;
@@ -20,7 +22,7 @@ public class GitHubService {
         logger.info("Successfully connected to repository: {}", repository.getFullName());
     }
 
-    public void uploadFile(String fileName, InputStream fileStream, String commitMessage) {
+    public String uploadFile(String fileName, InputStream fileStream, String commitMessage) {
         try {
             String pathInRepo = Config.GITHUB_TARGET_FOLDER.isEmpty()
                     ? fileName
@@ -28,13 +30,19 @@ public class GitHubService {
 
             logger.info("Uploading file '{}' to GitHub path: {}", fileName, pathInRepo);
 
-            repository.createContent()
+            GHContentUpdateResponse response = repository.createContent()
                     .path(pathInRepo)
                     .content(fileStream.readAllBytes())
                     .message(commitMessage)
                     .commit();
 
+            GHContent content = response.getContent();
+
             logger.info("Successfully uploaded and committed file '{}'", fileName);
+
+            String htmlUrl = content.getHtmlUrl();
+            return (htmlUrl != null) ? htmlUrl : "URL not available";
+
         } catch (IOException e) {
             logger.error("Error uploading file to GitHub", e);
             throw new RuntimeException("Failed to upload file to GitHub", e);
